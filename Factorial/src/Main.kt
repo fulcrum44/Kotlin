@@ -32,6 +32,18 @@ fun main() {
     println("Lista de 10 primos: ${listaNumerosPrimos(10)}")
     println("Lista de 20 primos: ${listaNumerosPrimos(20)}")
 
+    println()
+    println("Ejercicio 6: Descomposición en factores primos")
+    println("------------------------")
+    println("Los factores primos de 15 son: ${listadoFactoresPrimos(15)}")
+    println("Los factores primos de 44 son: ${listadoFactoresPrimos(44)}")
+
+    println()
+    println("Ejercicio 7: Descomposición en factores primos")
+    println("------------------------")
+    println("Los factores primos de 28 son: ${arrayFactoresPrimos(28)}")
+    println("Los factores primos de 56 son: ${arrayFactoresPrimos(56)}")
+
 }
 
 fun factorial(n : Int): Int {
@@ -83,4 +95,64 @@ fun listaNumerosPrimos(n : Int): List<Int> {
     }
 
     return primos
+}
+
+fun listadoFactoresPrimos(n: Int): List<Int> {
+    var factoresPrimos = mutableListOf<Int>();
+    var numero = n
+
+    // Dividimos entre 2 si se puede y hasta que se pueda
+    while (numero%2==0) {
+        factoresPrimos.add(2)
+        numero/=2;
+    }
+
+    // Probamos dividir entre 3 y los siguientes primos hasta la raíz cuadrada del número. Si dividiesemos entre un número mayor que el de la raíz cuadrada nos saldría un número decimal y no queremos eso
+    var i=3
+
+    while (i*i <= numero) { // i*i es otra manera de hacer una raíz cuadrada de num
+        while (!esPrimo(i)) i+=2 // Al final del bucle se aumenta dos unidades la variable i. Quizás el siguiente valor de i no es primo, valor que no nos interesaría usar para descomponer. Nos lo saltamos automáticamente pasando al siguiete impar hasta encontrar el próximo primo
+
+        while (numero%i==0) {
+            factoresPrimos.add(i)
+            numero/=i
+        }
+
+        i+=2
+    }
+
+    // Llegados a este punto puede ser que nos quede un número mayor que dos que no pueda dividirse nada más que consigo mismo. Añadimos ese número a la lista, lógicamente.
+    if (numero > 2) factoresPrimos.add(numero)
+
+    return factoresPrimos
+}
+
+fun arrayFactoresPrimos(n: Int): Array<Int> {
+    var factoresPrimos 
+    var numero = n
+
+    // Dividimos entre 2 si se puede y hasta que se pueda
+    while (numero%2==0) {
+        factoresPrimos.set(-1, 2)
+        numero/=2;
+    }
+
+    // Probamos dividir entre 3 y los siguientes primos hasta la raíz cuadrada del número. Si dividiesemos entre un número mayor que el de la raíz cuadrada nos saldría un número decimal y no queremos eso
+    var i=3
+
+    while (i*i <= numero) { // i*i es otra manera de hacer una raíz cuadrada de num
+        while (!esPrimo(i)) i+=2 // Al final del bucle se aumenta dos unidades la variable i. Quizás el siguiente valor de i no es primo, valor que no nos interesaría usar para descomponer. Nos lo saltamos automáticamente pasando al siguiete impar hasta encontrar el próximo primo
+
+        while (numero%i==0) {
+            factoresPrimos.set(-1, i)
+            numero/=i
+        }
+
+        i+=2
+    }
+
+    // Llegados a este punto puede ser que nos quede un número mayor que dos que no pueda dividirse nada más que consigo mismo. Añadimos ese número a la lista, lógicamente.
+    if (numero > 2) factoresPrimos.set(-1, i)
+
+    return factoresPrimos
 }
