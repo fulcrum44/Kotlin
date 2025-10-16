@@ -33,16 +33,16 @@ fun main() {
     println("Lista de 20 primos: ${listaNumerosPrimos(20)}")
 
     println()
-    println("Ejercicio 6: Descomposición en factores primos")
+    println("Ejercicio 6: Descomposición en factores primos (lista)")
     println("------------------------")
     println("Los factores primos de 15 son: ${listadoFactoresPrimos(15)}")
     println("Los factores primos de 44 son: ${listadoFactoresPrimos(44)}")
 
     println()
-    println("Ejercicio 7: Descomposición en factores primos")
+    println("Ejercicio 7: Descomposición en factores primos (array)")
     println("------------------------")
-    println("Los factores primos de 28 son: ${arrayFactoresPrimos(28)}")
-    println("Los factores primos de 56 son: ${arrayFactoresPrimos(56)}")
+    println("Los factores primos de 28 son: ${arrayFactoresPrimos(28).contentToString()}")
+    println("Los factores primos de 63 son: ${arrayFactoresPrimos(63).contentToString()}")
 
 }
 
@@ -127,13 +127,13 @@ fun listadoFactoresPrimos(n: Int): List<Int> {
     return factoresPrimos
 }
 
-fun arrayFactoresPrimos(n: Int): Array<Int> {
-    var factoresPrimos 
+fun arrayFactoresPrimos(n: Int): IntArray { // el IntArray guarda valores primitivos int a diferencia de Array<Int> que guarda objetos Integer
+    var factoresPrimos = mutableListOf<Int>();
     var numero = n
 
     // Dividimos entre 2 si se puede y hasta que se pueda
     while (numero%2==0) {
-        factoresPrimos.set(-1, 2)
+        factoresPrimos.add(2)
         numero/=2;
     }
 
@@ -144,7 +144,7 @@ fun arrayFactoresPrimos(n: Int): Array<Int> {
         while (!esPrimo(i)) i+=2 // Al final del bucle se aumenta dos unidades la variable i. Quizás el siguiente valor de i no es primo, valor que no nos interesaría usar para descomponer. Nos lo saltamos automáticamente pasando al siguiete impar hasta encontrar el próximo primo
 
         while (numero%i==0) {
-            factoresPrimos.set(-1, i)
+            factoresPrimos.add(i)
             numero/=i
         }
 
@@ -152,7 +152,12 @@ fun arrayFactoresPrimos(n: Int): Array<Int> {
     }
 
     // Llegados a este punto puede ser que nos quede un número mayor que dos que no pueda dividirse nada más que consigo mismo. Añadimos ese número a la lista, lógicamente.
-    if (numero > 2) factoresPrimos.set(-1, i)
+    if (numero > 2) factoresPrimos.add(numero)
 
-    return factoresPrimos
+    return factoresPrimos.toIntArray()
+}
+
+fun potenciaSumaDigitos(n: Int): Boolean {
+    var numero = n
+    
 }
