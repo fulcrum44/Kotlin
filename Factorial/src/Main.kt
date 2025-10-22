@@ -128,7 +128,7 @@ fun listadoFactoresPrimos(n: Int): List<Int> {
 }
 
 fun arrayFactoresPrimos(n: Int): Array<Int> {
-    var factoresPrimos 
+    var factoresPrimos
     var numero = n
 
     // Dividimos entre 2 si se puede y hasta que se pueda
