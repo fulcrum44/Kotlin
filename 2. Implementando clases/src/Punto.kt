@@ -27,11 +27,10 @@ class Punto(var x: Double, var y: Double) {
 
     // equals
     override fun equals(o: Any?): Boolean {
-        if (this === o) return true
         if (o === null || o !is Punto) return false;
         var otroPunto: Punto = o
 
-        return Objects.equals(this, otroPunto)
+        return this.x == otroPunto.x && this.y == otroPunto.y
     }
 
     // hashcode - es recomendable usarlo en conjunto con el equals.
