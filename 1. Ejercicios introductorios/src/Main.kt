@@ -157,7 +157,7 @@ fun arrayFactoresPrimos(n: Int): IntArray { // el IntArray guarda valores primit
     return factoresPrimos.toIntArray()
 }
 
-fun potenciaSumaDigitos(n: Int): Boolean {
-    var numero = n
-    
-}
+//fun potenciaSumaDigitos(n: Int): Boolean {
+//    var numero = n
+//
+//}
