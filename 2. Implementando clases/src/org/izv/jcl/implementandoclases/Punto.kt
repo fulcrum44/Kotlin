@@ -1,3 +1,5 @@
+package org.izv.jcl.implementandoclases
+
 import java.util.Objects
 import kotlin.math.sqrt
 

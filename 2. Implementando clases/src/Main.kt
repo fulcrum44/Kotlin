@@ -1,3 +1,5 @@
+import org.izv.jcl.implementandoclases.Punto
+
 fun main() {
 
     var p1 = Punto(7.00, 568.00)
