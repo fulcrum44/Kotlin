@@ -57,17 +57,7 @@ fun DisplayContent(modifier: Modifier = Modifier) {
     // textField2 es del tipo String, inmutable
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        TextField(
-            value = textField.value,
-            modifier = Modifier,
-            onValueChange = {textField.value = it},
-            //lambda-expresion a la que le llega un parámetro
-            //puedo omitir el nombre del parametro y usar su
-            //nombre predeterminado que es, en todoas las
-            //lambda expresiones: it
-            //parametro -> textFieldValue.value = parametro
-            label = {Text("Insert your text: ")}
-        )
+        InitialTextField(textField.value, {textField.value = it});
 //        TextField(
 //            value = textField2,
 //            modifier = Modifier,
@@ -78,28 +68,51 @@ fun DisplayContent(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            onClick = {
-                if (textField.value.isEmpty()) {
-                    textString = ""
-                } else {
-                    textString = String.format("Hello %s", textField.value)
-                }
-            },
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text("click")
-        }
+        MediumButton(onEvento = {
+            if (textField.value.isEmpty()) {
+                textString = ""
+            } else {
+                textString = String.format("Hello %s", textField.value)}
+        })
 
         Spacer(modifier = Modifier.height(16.dp))
 
-
-        Text (
-            text = if (textString.isEmpty()) "Hello ..." else textString,
-            style = MaterialTheme.typography.bodyLarge,
-            color = if (textString.isEmpty()) Color.Gray else Color.Black
-        )
+        FinalText(valor = textString);
     }
+}
+
+@Composable
+fun InitialTextField(v: String, onEvento: (String) -> Unit) {
+    TextField(
+        value = v,
+        modifier = Modifier,
+        onValueChange = onEvento,
+        //lambda-expresion a la que le llega un parámetro
+        //puedo omitir el nombre del parametro y usar su
+        //nombre predeterminado que es, en todoas las
+        //lambda expresiones: it
+        //parametro -> textFieldValue.value = parametro
+        label = {Text("Insert your text: ")}
+    )
+}
+
+@Composable
+fun MediumButton(onEvento: (String) -> Unit) {
+    Button(
+        onClick = {onEvento},
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Text("click")
+    }
+}
+
+@Composable
+fun FinalText(valor: String) {
+    Text (
+        text = if (valor.isEmpty()) "Hello ..." else valor,
+        style = MaterialTheme.typography.bodyLarge,
+        color = if (valor.isEmpty()) Color.Gray else Color.Black
+    )
 }
 
 @Preview(showBackground = true)
