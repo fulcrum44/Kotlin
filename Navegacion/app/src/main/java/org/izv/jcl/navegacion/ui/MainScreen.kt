@@ -71,14 +71,20 @@ fun Navigation() {
         composable("buscar-contacto") {
             SearchContactScreen(navController, contactos)
         }
+
+        composable("editar-contacto/{posicion}") { infoRuta ->
+            val itemValue = infoRuta.arguments?.getString("posicionEnLaLista")
+            EditContactScreen(navController, contactos, itemValue)
+        }
+
         composable("eliminar-contacto") {
             DeleteContactScreen(navController, contactos)
         }
         composable("listar-contactos") {
             ListContactScreen(navController, contactos)
         }
-        composable("pantalla-dos") {
-            PantallaDos(navController)
+        composable("acerca-de") {
+            AcercaDe(navController)
         }
     }
 }
@@ -118,10 +124,10 @@ fun MainMenu(navController: NavHostController) {
             Text("Lista de contactos")
         }
         Button(
-            onClick = { navController.navigate("pantalla-dos") },
+            onClick = { navController.navigate("acerca-de") },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Pantalla dos")
+            Text("Acerca de")
         }
     }
 }
@@ -169,6 +175,52 @@ fun AddContactScreen(navController: NavHostController, contactos: MutableList<Co
 }
 
 @Composable
+fun EditContactScreen(navController: NavHostController, contactos: MutableList<Contact>, item: String?) {
+    val itemValue = (item?:"0").toInt();
+    val contacto = contactos.get(itemValue)
+    var nombre by remember { mutableStateOf(contacto.name) }
+    var telefono by remember { mutableStateOf(contacto.phone) }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "Editar contacto",
+            style = MaterialTheme.typography.headlineMedium
+        )
+        OutlinedTextField(
+            value = nombre,
+            onValueChange = { nombre = it },
+            label = { Text("Nombre") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        OutlinedTextField(
+            value = telefono,
+            onValueChange = { telefono = it },
+            label = { Text("Teléfono") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Button(onClick = {
+            //val contacto = Contact(nombre, telefono)
+            //contactos.add(contacto)
+            contacto.phone = telefono
+            contacto.name = nombre
+            //nombre = ""
+            //telefono = ""
+        }) {
+            Text("Guardar contacto")
+        }
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(onClick = { navController.popBackStack() }) {
+            Text("Volver")
+        }
+    }
+}
+
+@Composable
 fun SearchContactScreen(navController: NavHostController, contactos: MutableList<Contact>) {
     var consulta by remember { mutableStateOf("") }
     var consultaTlf by remember { mutableStateOf("") }
@@ -181,10 +233,10 @@ fun SearchContactScreen(navController: NavHostController, contactos: MutableList
     }
 
     val contactosFiltradosTlf = remember(consultaTlf, contactos) {
-        if (consulta.isBlank()) {
+        if (consultaTlf.isBlank()) {
             contactos
         } else contactos.filter {
-            it.name.contains(consultaTlf, ignoreCase = true)
+            it.phone.contains(consultaTlf, ignoreCase = true)
         }
     }
     Column(
@@ -208,13 +260,18 @@ fun SearchContactScreen(navController: NavHostController, contactos: MutableList
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
-        if (contactosFiltrados.isEmpty()) {
+        if (contactosFiltrados.isEmpty() || contactosFiltradosTlf.isEmpty()) {
             Text("No se encontraron contactos.")
+        } else if (consultaTlf.isNotEmpty()) {
+            contactosFiltradosTlf.forEach { contact ->
+                ShowItem(contact = contact)
+            }
         } else {
             contactosFiltrados.forEach { contact ->
                 ShowItem(contact = contact)
             }
         }
+
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { navController.popBackStack() }) {
             Text("Volver")
@@ -275,6 +332,8 @@ fun DeleteContactScreen(navController: NavHostController, contactos: MutableList
     }
 }
 
+
+
 @Composable
 fun ShowDeleteItem(contact: Contact, onDelete: (Contact) -> Unit) {
     Row(
@@ -296,6 +355,7 @@ fun ShowDeleteItem(contact: Contact, onDelete: (Contact) -> Unit) {
 @Composable
 fun ListContactScreen(navController: NavHostController, contactos: MutableList<Contact>) {
     var contactToDelete by remember { mutableStateOf<Contact?>(null) }
+    var contactToEdit by remember { mutableStateOf<Contact?>(null) }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -311,10 +371,16 @@ fun ListContactScreen(navController: NavHostController, contactos: MutableList<C
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()) {
+                var contador = 0
                 items(items = contactos) { contacto ->
+                    val ruta = "editar-contacto/" + contador.toString()
                     ContactItemCard(
+                        navController = navController,
                         contact = contacto,
-                        onDeleteRequest = { contactToDelete = it })
+                        onDeleteRequest = { contactToDelete = it },
+                        onEditRequest = { navController.navigate(ruta)}
+                    )
+
                 }
             }
         }
@@ -346,7 +412,7 @@ fun ListContactScreen(navController: NavHostController, contactos: MutableList<C
 }
 
 @Composable
-fun ContactItemCard(contact: Contact, onDeleteRequest: (Contact) -> Unit) {
+    fun ContactItemCard(navController: NavHostController, contact: Contact, onDeleteRequest: (Contact) -> Unit, onEditRequest: (Contact) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -360,6 +426,12 @@ fun ContactItemCard(contact: Contact, onDeleteRequest: (Contact) -> Unit) {
         ) {
             Text(text = contact.name + " " + contact.phone)
             Button(
+                onClick = { onEditRequest(contact) },
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+            ) {
+                Text("Editar")
+            }
+            Button(
                 onClick = { onDeleteRequest(contact) },
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
             ) {
@@ -370,7 +442,7 @@ fun ContactItemCard(contact: Contact, onDeleteRequest: (Contact) -> Unit) {
 }
 
 @Composable
-fun PantallaDos(navController: NavHostController) {
+fun AcercaDe(navController: NavHostController) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -378,7 +450,7 @@ fun PantallaDos(navController: NavHostController) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(text = "Hola buenas")
+        Text(text = "Modificado por Joel Chicano López")
 
         Button(onClick = { navController.popBackStack() }) {
             Text("Volver")

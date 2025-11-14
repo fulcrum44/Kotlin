@@ -1,6 +1,6 @@
 package org.izv.jcl.navegacion.data
 
 data class Contact(
-    val name: String,
-    val phone: String
+    var name: String,
+    var phone: String
 )
