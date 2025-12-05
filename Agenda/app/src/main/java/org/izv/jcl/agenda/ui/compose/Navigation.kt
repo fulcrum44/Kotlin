@@ -7,9 +7,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import org.izv.jcl.agenda.model.repository.ContactFileRepository
+import org.izv.jcl.agenda.ui.viewmodel.ContactFileViewModel
 
 @Composable
 fun MainScreen() {
@@ -22,18 +28,29 @@ fun MainScreen() {
 fun Navigation(innerPadding: PaddingValues) {
 
     val navController = rememberNavController()
+
+    val context = LocalContext.current
+
+    val repository = ContactFileRepository(context)
+    val viewModel: ContactFileViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return ContactFileViewModel(repository) as T
+            }
+        })
+
     NavHost(
         navController = navController,
         startDestination = "home_screen"
     ) {
         composable("home_screen") {
-            HomeScreen(navController, innerPadding)
+            HomeScreen(navController, viewModel, innerPadding)
         }
         composable("add_contact") {
-            AddContact(navController, innerPadding)
+            AddContact(navController, viewModel, innerPadding)
         }
         composable("edit_contact") {
-            EditContact(navController, innerPadding)
+            EditContact(navController, viewModel, innerPadding)
         }
     }
 }

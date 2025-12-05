@@ -23,9 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import org.izv.jcl.agenda.ui.viewmodel.ContactFileViewModel
 
 @Composable
-fun AddContact(navController: NavController, innerPadding: PaddingValues) {
+fun AddContact(navController: NavController, viewModel: ContactFileViewModel, innerPadding: PaddingValues) {
     var name by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     Column(

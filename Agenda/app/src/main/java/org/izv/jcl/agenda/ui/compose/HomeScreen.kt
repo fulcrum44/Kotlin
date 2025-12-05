@@ -13,14 +13,23 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import org.izv.jcl.agenda.ui.viewmodel.ContactFileViewModel
 
 @Composable
-fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
-    val contactos = listOf("one", "two", "", "", "", "", "", "", "")
+fun HomeScreen(navController: NavController, viewModel: ContactFileViewModel, innerPadding: PaddingValues) {
+//    val contactos = listOf("one", "two", "", "", "", "", "", "", "")
+
+    val contacts = viewModel.contacts.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.readContacts()
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -29,7 +38,7 @@ fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
             .fillMaxSize()
             .padding(innerPadding)
     ) {
-        if (contactos.isEmpty()) {
+        if (contacts.value.isEmpty()) {
             Text("No contacts found.")
         } else {
             LazyColumn(
@@ -38,7 +47,7 @@ fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
                     .weight(1f)
                     .fillMaxWidth()
             ) {
-                items(items = contactos) { _ ->
+                items(items = contacts.value) { _ ->
                     Item(navController)
 
                 }
