@@ -14,9 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import org.izv.jcl.agenda.model.plain.Contact
 
 @Composable
-fun Item(navController: NavController) {
+fun Item(navController: NavController, contact: Contact) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -27,9 +28,11 @@ fun Item(navController: NavController) {
             modifier = Modifier
                 .padding(12.dp)
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceAround,
         ) {
-            Text(text = "Pep 958123456")
+            Text(text = contact.name)
+            Text(text = contact.phone)
+
 //            Button(
 //                onClick = {  },
 //                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)

@@ -47,8 +47,8 @@ fun HomeScreen(navController: NavController, viewModel: ContactFileViewModel, in
                     .weight(1f)
                     .fillMaxWidth()
             ) {
-                items(items = contacts.value) { _ ->
-                    Item(navController)
+                items(items = contacts.value) { contact ->
+                    Item(navController, contact)
 
                 }
             }
