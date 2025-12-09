@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +30,7 @@ import org.izv.jcl.agenda.ui.viewmodel.ContactFileViewModel
 fun AddContact(navController: NavController, viewModel: ContactFileViewModel, innerPadding: PaddingValues) {
     var name by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -54,13 +56,14 @@ fun AddContact(navController: NavController, viewModel: ContactFileViewModel, in
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
         )
         Button(onClick = {
-
+            viewModel.addContact(name, phone)
+            navController.popBackStack() // Volvemos a la pantalla principal cuando guardemos el nuevo contacto.
         }) {
             Text("Add")
         }
         Spacer(modifier = Modifier.height(24.dp))
         Button(onClick = { navController.popBackStack() }) {
-            Text("Back")
+            Text("Cancel")
         }
     }
 }

@@ -5,7 +5,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.izv.jcl.agenda.model.plain.Contact
 import java.io.File
-import java.nio.file.Files
 
 class ContactFileRepository(private val context: Context) {
     val fileName = "contacts.csv"
@@ -34,25 +33,35 @@ class ContactFileRepository(private val context: Context) {
             }
 
             list
-
         }
     }
 
-    suspend fun writeContact(contact: Contact) {
+    suspend fun addContact(contact: Contact) {
         return withContext(Dispatchers.IO) {
+            val file = getFile()
 
+            if (file.exists()) {
+                file.appendText(contact.toString())
+            } else {
+                file.writeText(contact.toString())
+            }
+            file.appendText("\n")
         }
     }
 
-    suspend fun editContact(contact: Contact) {
+    suspend fun editContact(contacts: List<Contact>) {
         return withContext(Dispatchers.IO) {
+            val file = getFile()
 
+            val sb = StringBuilder()
+            for (contact in contacts) {
+                sb.append(contact.toString())
+                sb.append("\n")
+            }
+
+            file.writeText(sb.toString())
         }
     }
 
-    suspend fun deleteContact(contact: Contact) {
-        return withContext(Dispatchers.IO) {
-
-        }
-    }
+    // Por qué hacer uno para eliminar si se hace lo mismo que el editar el fichero.
 }

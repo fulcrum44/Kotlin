@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
@@ -49,8 +47,12 @@ fun Navigation(innerPadding: PaddingValues) {
         composable("add_contact") {
             AddContact(navController, viewModel, innerPadding)
         }
-        composable("edit_contact") {
-            EditContact(navController, viewModel, innerPadding)
+        composable("edit_contact/{id}") { info ->
+
+            val idString = info.arguments?.getString("id")
+            val contactId = idString?.toIntOrNull()
+
+            EditContact(navController, viewModel, contactId, innerPadding)
         }
     }
 }
